@@ -1,92 +1,90 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>เครื่องมือเปรียบเทียบรูปภาพ Before/After</title>
+    <title>ระบบเปรียบเทียบรูปภาพงานปรับปรุง</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             touch-action: manipulation;
         }
         .photo-slot {
             aspect-ratio: 4 / 3;
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             border: 2px dashed #cbd5e1;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .photo-slot.has-image {
-            border: none;
+            border: 2px solid #e2e8f0;
             background-color: #fff;
         }
         .loader-spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
+            border-top: 3px solid #0f172a;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        input, button {
-            font-size: 16px !important; /* Prevent iOS zoom */
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input, button { font-size: 16px !important; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-10">
 
     <div class="max-w-md mx-auto">
-        <!-- Header -->
-        <header class="text-center mb-6">
-            <h1 class="text-2xl font-semibold text-slate-800">เปรียบเทียบรูปภาพ</h1>
-            <p class="text-slate-500 text-sm">สร้างรูป Before & After ง่ายๆ ในไม่กี่วินาที</p>
+        <!-- Official Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">ระบบเปรียบเทียบรูปภาพ</h1>
+            <p class="text-slate-500 text-sm mt-1">สำหรับการจัดทำรายงานการปรับปรุงพื้นที่</p>
         </header>
 
-        <!-- Input Section -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-5 space-y-5">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">พื้นที่ / ชื่อรายการ</label>
-                <input type="text" id="areaName" placeholder="เช่น บริเวณคลังสินค้า A" 
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+        <!-- Main Work Card -->
+        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-200/50 p-6 space-y-6">
+            <!-- Area Input -->
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-slate-700 ml-1">ชื่อพื้นที่ / รายการงาน</label>
+                <input type="text" id="areaName" placeholder="ระบุตำแหน่งหรือรายละเอียดพื้นที่..." 
+                    class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all">
             </div>
 
+            <!-- Comparison Section -->
             <div class="grid grid-cols-2 gap-4">
-                <!-- Before Slot -->
-                <div>
-                    <label class="block text-xs font-medium text-slate-500 mb-2 uppercase tracking-wider text-center">รูปก่อนปรับปรุง</label>
+                <!-- Before Section -->
+                <div class="space-y-2 text-center">
+                    <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest">ก่อนปรับปรุง</span>
                     <div id="beforeBtn" onclick="document.getElementById('inputBefore').click()" 
-                        class="photo-slot rounded-2xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative">
-                        <div id="beforePlaceholder" class="flex flex-col items-center p-2 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                        class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group">
+                        <div id="beforePlaceholder" class="flex flex-col items-center p-2 text-slate-400 group-hover:text-blue-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-xs text-slate-400 font-light">กดเพื่อเพิ่มรูป</span>
+                            <span class="text-[10px] font-medium">ถ่ายภาพ / เลือกรูป</span>
                         </div>
                         <img id="beforePreview" class="hidden w-full h-full object-cover">
-                        <div id="beforeBadge" class="hidden absolute top-2 left-2 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">BEFORE</div>
+                        <div id="beforeBadge" class="hidden absolute top-3 left-3 bg-blue-600/90 text-white text-[9px] px-2.5 py-1 rounded-full font-bold shadow-lg backdrop-blur-sm">BEFORE</div>
                     </div>
                     <input type="file" id="inputBefore" accept="image/*" class="hidden" onchange="handleImage(this, 'before')">
                 </div>
 
-                <!-- After Slot -->
-                <div>
-                    <label class="block text-xs font-medium text-slate-500 mb-2 uppercase tracking-wider text-center">รูปหลังปรับปรุง</label>
+                <!-- After Section -->
+                <div class="space-y-2 text-center">
+                    <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">หลังปรับปรุง</span>
                     <div id="afterBtn" onclick="document.getElementById('inputAfter').click()" 
-                        class="photo-slot rounded-2xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative">
-                        <div id="afterPlaceholder" class="flex flex-col items-center p-2 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4" />
+                        class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group">
+                        <div id="afterPlaceholder" class="flex flex-col items-center p-2 text-slate-400 group-hover:text-green-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-xs text-slate-400 font-light">กดเพื่อเพิ่มรูป</span>
+                            <span class="text-[10px] font-medium">ถ่ายภาพ / เลือกรูป</span>
                         </div>
                         <img id="afterPreview" class="hidden w-full h-full object-cover">
-                        <div id="afterBadge" class="hidden absolute top-2 right-2 bg-green-600 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">AFTER</div>
+                        <div id="afterBadge" class="hidden absolute top-3 right-3 bg-green-600/90 text-white text-[9px] px-2.5 py-1 rounded-full font-bold shadow-lg backdrop-blur-sm">AFTER</div>
                     </div>
                     <input type="file" id="inputAfter" accept="image/*" class="hidden" onchange="handleImage(this, 'after')">
                 </div>
@@ -94,45 +92,54 @@
 
             <!-- Action Button -->
             <button id="btnAction" onclick="generateAndShare()" 
-                class="w-full bg-slate-900 hover:bg-black text-white py-4 rounded-2xl font-medium transition-all active:scale-[0.98] flex items-center justify-center space-x-2 shadow-lg shadow-slate-200">
-                <span>บันทึก/แชร์รูปภาพ</span>
+                class="w-full bg-slate-900 hover:bg-black text-white py-5 rounded-[1.5rem] font-semibold text-lg transition-all active:scale-[0.97] flex items-center justify-center space-x-3 shadow-2xl shadow-slate-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+                <span>บันทึกและแชร์รูปภาพ</span>
             </button>
         </div>
 
-        <p class="text-center text-xs text-slate-400 mt-6 font-light">ออกแบบมาเพื่อการใช้งานที่รวดเร็ว ไม่ต้องลงทะเบียน</p>
+        <footer class="mt-10 text-center">
+            <p class="text-xs text-slate-400 font-light">ระบบทำงานแบบ Client-side ไม่มีการเก็บข้อมูลรูปภาพไว้บนเซิร์ฟเวอร์</p>
+        </footer>
     </div>
 
-    <!-- Hidden Canvas for Export -->
+    <!-- Hidden Export Canvas -->
     <canvas id="exportCanvas" class="hidden"></canvas>
 
-    <!-- UI Feedback Components -->
-    <div id="loadingOverlay" class="hidden fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
-        <div class="loader-spinner mb-3"></div>
-        <p class="text-slate-800 font-medium">กำลังบันทึก...</p>
+    <!-- Overlay & Feedback -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white">
+        <div class="loader-spinner mb-4"></div>
+        <p class="font-medium tracking-wide">กำลังประมวลผลไฟล์...</p>
     </div>
 
-    <div id="successToast" class="fixed top-10 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-xl z-50 transform translate-y-[-150%] transition-transform duration-300 pointer-events-none">
-        <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+    <div id="successToast" class="fixed top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-full shadow-2xl z-50 transform translate-y-[-250%] transition-transform duration-500 pointer-events-none flex items-center space-x-3">
+        <div class="bg-green-500 rounded-full p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
             </svg>
-            <span class="font-medium">บันทึกสำเร็จ</span>
         </div>
+        <span class="font-medium">ดำเนินการสำเร็จ</span>
     </div>
 
-    <div id="fallbackModal" class="hidden fixed inset-0 bg-slate-900/50 p-6 z-[60] flex items-center justify-center">
-        <div class="bg-white rounded-3xl p-6 w-full max-w-sm">
-            <h3 class="text-lg font-semibold mb-2">ดาวน์โหลดรูปแล้ว</h3>
-            <p class="text-slate-600 text-sm mb-6">ระบบดาวน์โหลดรูปแล้ว หากต้องการเก็บในอัลบั้ม โปรดเปิดไฟล์และกดบันทึกรูปภาพ</p>
-            <button onclick="closeModal()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-medium">รับทราบ</button>
+    <div id="fallbackModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] p-6 flex items-center justify-center">
+        <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-sm text-center shadow-2xl">
+            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">ดาวน์โหลดรูปภาพสำเร็จ</h3>
+            <p class="text-slate-500 text-sm mb-8 leading-relaxed">
+                ระบบได้ดาวน์โหลดรูปภาพลงในเครื่องแล้ว <br>สามารถตรวจสอบได้ที่โฟลเดอร์ Download <br>หรือเมนูจัดเก็บรูปภาพในเครื่องของคุณ
+            </p>
+            <button onclick="closeModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-colors">ตกลง</button>
         </div>
     </div>
 
     <script>
-        const state = {
-            beforeImg: null,
-            afterImg: null
-        };
+        const state = { beforeImg: null, afterImg: null };
 
         function handleImage(input, type) {
             const file = input.files[0];
@@ -152,19 +159,17 @@
                 slot.classList.add('has-image');
                 
                 const img = new Image();
+                img.onload = () => state[`${type}Img`] = img;
                 img.src = e.target.result;
-                img.onload = () => {
-                    state[`${type}Img`] = img;
-                };
             };
             reader.readAsDataURL(file);
         }
 
         async function generateAndShare() {
-            const areaName = document.getElementById('areaName').value || "ไม่ได้ระบุพื้นที่";
+            const areaName = document.getElementById('areaName').value.trim() || "รายงานการเปรียบเทียบพื้นที่";
             
             if (!state.beforeImg || !state.afterImg) {
-                alertCustom("โปรดใส่รูปภาพให้ครบทั้ง 'ก่อน' และ 'หลัง'");
+                alert("กรุณาระบุรูปภาพให้ครบทั้ง 'ก่อน' และ 'หลัง' ปรับปรุง");
                 return;
             }
 
@@ -174,110 +179,96 @@
                 const canvas = document.getElementById('exportCanvas');
                 const ctx = canvas.getContext('2d');
 
-                // High Quality Export Setup (2:1 Ratio for Comparison)
-                const margin = 40;
-                const headerHeight = 120;
-                const imgWidth = 1200;
-                const imgHeight = 900;
+                // High Definition Export Settings
+                const padding = 30;
+                const headerH = 120;
+                const imgW = 800;
+                const imgH = 600;
                 
-                canvas.width = (imgWidth * 2) + (margin * 3);
-                canvas.height = imgHeight + headerHeight + (margin * 2);
+                canvas.width = (imgW * 2) + (padding * 3);
+                canvas.height = imgH + headerH + (padding * 2);
 
                 // Background
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Draw Area Name
-                ctx.fillStyle = "#1e293b";
-                ctx.font = "bold 64px Kanit, sans-serif";
+                // Header Area
+                ctx.fillStyle = "#0f172a";
+                ctx.font = "bold 52px Kanit, sans-serif";
                 ctx.textAlign = "center";
-                ctx.fillText(areaName, canvas.width / 2, 85);
+                ctx.fillText(areaName, canvas.width / 2, 80);
 
-                // Helper to draw images in 'Cover' style
-                function drawCoverImage(img, dx, dy, dw, dh) {
-                    const imgRatio = img.width / img.height;
-                    const targetRatio = dw / dh;
-                    let sw, sh, sx, sy;
-
-                    if (imgRatio > targetRatio) {
-                        sh = img.height;
-                        sw = img.height * targetRatio;
-                        sx = (img.width - sw) / 2;
-                        sy = 0;
-                    } else {
-                        sw = img.width;
-                        sh = img.width / targetRatio;
-                        sx = 0;
-                        sy = (img.height - sh) / 2;
-                    }
-
-                    // Rounded Corners for images
+                function drawFrame(img, x, y, w, h, label, labelBg) {
                     ctx.save();
-                    const radius = 30;
+                    // Clip Rounded Corners
+                    const r = 25;
                     ctx.beginPath();
-                    ctx.moveTo(dx + radius, dy);
-                    ctx.lineTo(dx + dw - radius, dy);
-                    ctx.quadraticCurveTo(dx + dw, dy, dx + dw, dy + radius);
-                    ctx.lineTo(dx + dw, dy + dh - radius);
-                    ctx.quadraticCurveTo(dx + dw, dy + dh, dx + dw - radius, dy + dh);
-                    ctx.lineTo(dx + radius, dy + dh);
-                    ctx.quadraticCurveTo(dx, dy + dh, dx, dy + dh - radius);
-                    ctx.lineTo(dx, dy + radius);
-                    ctx.quadraticCurveTo(dx, dy, dx + radius, dy);
+                    ctx.moveTo(x + r, y);
+                    ctx.lineTo(x + w - r, y);
+                    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+                    ctx.lineTo(x + w, y + h - r);
+                    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                    ctx.lineTo(x + r, y + h);
+                    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+                    ctx.lineTo(x, y + r);
+                    ctx.quadraticCurveTo(x, y, x + r, y);
                     ctx.closePath();
                     ctx.clip();
-                    
-                    ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+
+                    // Object Fit: Cover
+                    const imgRatio = img.width / img.height;
+                    const targetRatio = w / h;
+                    let sw, sh, sx, sy;
+                    if (imgRatio > targetRatio) {
+                        sh = img.height; sw = img.height * targetRatio;
+                        sx = (img.width - sw) / 2; sy = 0;
+                    } else {
+                        sw = img.width; sh = img.width / targetRatio;
+                        sx = 0; sy = (img.height - sh) / 2;
+                    }
+                    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
                     ctx.restore();
+
+                    // Label Badge
+                    ctx.fillStyle = labelBg;
+                    ctx.beginPath();
+                    ctx.roundRect(x + 25, y + 25, 180, 60, 15);
+                    ctx.fill();
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.font = "bold 28px Kanit, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(label, x + 115, y + 65);
                 }
 
-                // Draw Images
-                drawCoverImage(state.beforeImg, margin, headerHeight, imgWidth, imgHeight);
-                drawCoverImage(state.afterImg, imgWidth + (margin * 2), headerHeight, imgWidth, imgHeight);
+                drawFrame(state.beforeImg, padding, headerH + padding, imgW, imgH, "BEFORE", "#2563eb");
+                drawFrame(state.afterImg, imgW + (padding * 2), headerH + padding, imgW, imgH, "AFTER", "#16a34a");
 
-                // Draw Labels on Images
-                ctx.font = "bold 40px Kanit, sans-serif";
-                
-                // Before Label
-                ctx.fillStyle = "#2563eb";
-                ctx.fillRect(margin + 20, headerHeight + 20, 200, 70);
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fillText("BEFORE", margin + 120, headerHeight + 68);
-
-                // After Label
-                ctx.fillStyle = "#16a34a";
-                ctx.fillRect(imgWidth + (margin * 2) + 20, headerHeight + 20, 200, 70);
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fillText("AFTER", imgWidth + (margin * 2) + 120, headerHeight + 68);
-
-                // Process sharing
+                // Process Blob
                 canvas.toBlob(async (blob) => {
-                    const fileName = `BeforeAfter_${new Date().getTime()}.jpg`;
+                    const fileName = `Comparison_${Date.now()}.jpg`;
                     const file = new File([blob], fileName, { type: "image/jpeg" });
 
-                    if (navigator.share && navigator.canShare({ files: [file] })) {
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                         try {
                             await navigator.share({
                                 files: [file],
                                 title: 'ผลการเปรียบเทียบรูปภาพ',
-                                text: `ผลงานการปรับปรุงพื้นที่: ${areaName}`
+                                text: areaName
                             });
                             onSuccess();
                         } catch (err) {
-                            if (err.name !== 'AbortError') {
-                                fallbackDownload(blob, fileName);
-                            }
-                            toggleLoading(false);
+                            if (err.name !== 'AbortError') fallbackDownload(blob, fileName);
+                            else toggleLoading(false);
                         }
                     } else {
                         fallbackDownload(blob, fileName);
                     }
-                }, 'image/jpeg', 0.85);
+                }, 'image/jpeg', 0.9);
 
             } catch (error) {
                 console.error(error);
                 toggleLoading(false);
-                alertCustom("เกิดข้อผิดพลาดในการประมวลผล");
+                alert("ระบบเกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
             }
         }
 
@@ -288,9 +279,10 @@
             a.download = fileName;
             document.body.appendChild(a);
             a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 150);
             toggleLoading(false);
             document.getElementById('fallbackModal').classList.remove('hidden');
             onSuccess();
@@ -302,14 +294,11 @@
 
         function onSuccess() {
             toggleLoading(false);
-            showToast();
+            const toast = document.getElementById('successToast');
+            toast.style.transform = 'translate(-50%, 0)';
             
-            // Clear all data
+            // Reset Data
             document.getElementById('areaName').value = "";
-            document.getElementById('inputBefore').value = "";
-            document.getElementById('inputAfter').value = "";
-            
-            // Reset previews
             ['before', 'after'].forEach(type => {
                 document.getElementById(`${type}Preview`).classList.add('hidden');
                 document.getElementById(`${type}Placeholder`).classList.remove('hidden');
@@ -318,38 +307,17 @@
                 state[`${type}Img`] = null;
             });
 
-            // Smooth Scroll to Top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showToast() {
-            const toast = document.getElementById('successToast');
-            toast.style.transform = 'translate(-1/2, 0)';
             setTimeout(() => {
-                toast.style.transform = 'translate(-1/2, -150%)';
+                toast.style.transform = 'translate(-50%, -250%)';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }, 3000);
         }
 
         function closeModal() {
             document.getElementById('fallbackModal').classList.add('hidden');
         }
-
-        // Custom Simple Alert instead of native alert()
-        function alertCustom(msg) {
-            const toast = document.getElementById('successToast');
-            const originalContent = toast.innerHTML;
-            toast.classList.replace('bg-green-600', 'bg-red-600');
-            toast.innerHTML = `<span class="font-medium">${msg}</span>`;
-            toast.style.transform = 'translate(-1/2, 0)';
-            
-            setTimeout(() => {
-                toast.style.transform = 'translate(-1/2, -150%)';
-                setTimeout(() => {
-                    toast.classList.replace('bg-red-600', 'bg-green-600');
-                    toast.innerHTML = originalContent;
-                }, 300);
-            }, 3000);
-        }
     </script>
 </body>
 </html>
+
+```
