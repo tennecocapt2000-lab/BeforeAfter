@@ -3,240 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ระบบเปรียบเทียบรูปภาพงานปรับปรุง</title>
+    <title>Before/After App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-
     <style>
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: #f4f7fa;
+            background-color: #f1f5f9;
             touch-action: manipulation;
         }
-
         .photo-slot {
             aspect-ratio: 4 / 3;
             background-color: #ffffff;
             border: 2px dashed #cbd5e1;
             transition: all 0.3s ease;
         }
-
         .photo-slot.has-image {
             border: 2px solid #e2e8f0;
         }
-
         .loader-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #0f172a;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0f172a;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             animation: spin 0.8s linear infinite;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        input, button {
-            font-size: 16px !important;
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input, button { font-size: 16px !important; }
+        .result-image {
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            max-width: 100%;
+            height: auto;
+            border-radius: 1rem;
         }
     </style>
 </head>
-
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-10 pb-20">
 
     <div class="max-w-md mx-auto">
-
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">ระบบเปรียบเทียบรูปภาพ</h1>
+        <header class="text-center mb-8" id="mainHeader">
+            <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Before/After App</h1>
             <p class="text-slate-500 text-sm mt-1">เปรียบเทียบงานก่อนและหลังปรับปรุง</p>
         </header>
 
-        <!-- Main Card -->
-        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-200/50 p-6 space-y-6">
-
-            <div class="space-y-2">
-                <label class="block text-sm font-semibold text-slate-700 ml-1">ชื่อพื้นที่ / รายการงาน</label>
-                <input 
-                    type="text" 
-                    id="areaName" 
-                    placeholder="ระบุตำแหน่งพื้นที่..." 
-                    class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all"
-                >
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-
-                <!-- Before -->
-                <div class="space-y-2 text-center">
-                    <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest">ก่อนปรับปรุง</span>
-
-                    <div 
-                        id="beforeBtn" 
-                        onclick="document.getElementById('inputBefore').click()" 
-                        class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group"
-                    >
-                        <div id="beforePlaceholder" class="flex flex-col items-center p-2 text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="text-[10px] font-medium">แตะเพื่อเลือกรูป</span>
-                        </div>
-
-                        <img id="beforePreview" class="hidden w-full h-full object-cover">
-                        <div id="beforeBadge" class="hidden absolute top-3 left-3 bg-blue-600 text-white text-[9px] px-2.5 py-1 rounded-full font-bold shadow-lg">BEFORE</div>
-                    </div>
-
-                    <input 
-                        type="file" 
-                        id="inputBefore" 
-                        accept="image/*" 
-                        class="hidden" 
-                        onchange="handleImage(this, 'before')"
-                    >
+        <div id="inputSection" class="space-y-6">
+            <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-200/50 p-6 space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 ml-1">ชื่อพื้นที่ / รายการงาน</label>
+                    <input type="text" id="areaName" placeholder="ระบุตำแหน่งพื้นที่..." 
+                        class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all">
                 </div>
 
-                <!-- After -->
-                <div class="space-y-2 text-center">
-                    <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">หลังปรับปรุง</span>
-
-                    <div 
-                        id="afterBtn" 
-                        onclick="document.getElementById('inputAfter').click()" 
-                        class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative group"
-                    >
-                        <div id="afterPlaceholder" class="flex flex-col items-center p-2 text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="text-[10px] font-medium">แตะเพื่อเลือกรูป</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Before -->
+                    <div class="space-y-2 text-center">
+                        <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest">ก่อนปรับปรุง</span>
+                        <div id="beforeBtn" onclick="document.getElementById('inputBefore').click()" 
+                            class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative">
+                            <div id="beforePlaceholder" class="flex flex-col items-center p-2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span class="text-[10px] font-medium text-center">แตะเพื่อเลือกรูป</span>
+                            </div>
+                            <img id="beforePreview" class="hidden w-full h-full object-cover">
                         </div>
-
-                        <img id="afterPreview" class="hidden w-full h-full object-cover">
-                        <div id="afterBadge" class="hidden absolute top-3 right-3 bg-green-600 text-white text-[9px] px-2.5 py-1 rounded-full font-bold shadow-lg">AFTER</div>
+                        <input type="file" id="inputBefore" accept="image/*" class="hidden" onchange="handleImage(this, 'before')">
                     </div>
 
-                    <input 
-                        type="file" 
-                        id="inputAfter" 
-                        accept="image/*" 
-                        class="hidden" 
-                        onchange="handleImage(this, 'after')"
-                    >
+                    <!-- After -->
+                    <div class="space-y-2 text-center">
+                        <span class="text-[11px] font-bold text-green-600 uppercase tracking-widest">หลังปรับปรุง</span>
+                        <div id="afterBtn" onclick="document.getElementById('inputAfter').click()" 
+                            class="photo-slot rounded-3xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative">
+                            <div id="afterPlaceholder" class="flex flex-col items-center p-2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span class="text-[10px] font-medium text-center">แตะเพื่อเลือกรูป</span>
+                            </div>
+                            <img id="afterPreview" class="hidden w-full h-full object-cover">
+                        </div>
+                        <input type="file" id="inputAfter" accept="image/*" class="hidden" onchange="handleImage(this, 'after')">
+                    </div>
                 </div>
+
+                <button id="btnAction" onclick="generateResult()" 
+                    class="w-full bg-slate-900 hover:bg-black text-white py-5 rounded-[1.5rem] font-semibold text-lg transition-all active:scale-[0.97] flex items-center justify-center space-x-3 shadow-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span>สร้างรูปเปรียบเทียบ</span>
+                </button>
             </div>
-
-            <button 
-                id="btnAction" 
-                onclick="generateAndShare()" 
-                class="w-full bg-slate-900 hover:bg-black text-white py-5 rounded-[1.5rem] font-semibold text-lg transition-all active:scale-[0.97] flex items-center justify-center space-x-3 shadow-xl"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                </svg>
-                <span>กดเพื่อเซฟภาพลงอัลบั้ม</span>
-            </button>
-
-            <p class="text-center text-[11px] text-slate-400 leading-relaxed">
-                iPhone ให้เลือก “บันทึกรูปภาพ” ในหน้าต่างแชร์ <br>
-                Android ให้เลือก Photos / Gallery / Save Image
-            </p>
         </div>
 
-        <footer class="mt-8 text-center text-[10px] text-slate-400 font-light">
-            ประมวลผลข้อมูลภายในเครื่องเพื่อความปลอดภัยของข้อมูล
-        </footer>
+        <div id="resultView" class="hidden mt-10 space-y-6">
+            <div class="relative">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold z-10 shadow-lg">
+                    ผลลัพธ์พร้อมใช้งาน
+                </div>
+                <div class="bg-white rounded-[2.5rem] shadow-2xl p-4 text-center">
+                    <div class="mb-4 pt-4 px-4">
+                        <p class="text-slate-500 text-xs leading-relaxed italic">
+                            แตะค้างที่รูปภาพด้านล่าง แล้วเลือก <span class="font-bold text-slate-800 underline">"บันทึกรูปภาพ"</span> หรือ <span class="font-bold text-slate-800 underline">"แชร์"</span> เพื่อส่งต่อได้ทันที
+                        </p>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-2xl overflow-hidden mb-6 border border-slate-100">
+                        <img id="finalImage" class="result-image mx-auto" alt="ผลลัพธ์">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pb-2">
+                        <button onclick="downloadImageManually()" class="flex flex-col items-center justify-center bg-blue-600 text-white p-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-blue-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            <span class="text-sm">บันทึกรูป</span>
+                        </button>
+                        <button onclick="resetApp()" class="flex flex-col items-center justify-center bg-slate-100 text-slate-700 p-4 rounded-2xl font-bold transition-all active:scale-95 border border-slate-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span class="text-sm">เริ่มใหม่</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Hidden Export Canvas -->
     <canvas id="exportCanvas" class="hidden"></canvas>
 
-    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white">
         <div class="loader-spinner mb-4"></div>
-        <p class="font-medium tracking-wide">กำลังประมวลผลไฟล์...</p>
-    </div>
-
-    <!-- Error Toast -->
-    <div id="errorToast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl z-50 transform translate-y-[200%] transition-transform duration-300 flex items-center space-x-2">
-        <span id="errorMsg">เกิดข้อผิดพลาด</span>
-    </div>
-
-    <!-- Fallback Modal -->
-    <div id="fallbackModal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] p-6 flex items-center justify-center">
-        <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-sm text-center shadow-2xl">
-            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-            </div>
-
-            <h3 class="text-xl font-bold text-slate-800 mb-3">เลือกบันทึกรูปภาพ</h3>
-
-            <p class="text-slate-500 text-sm mb-8 leading-relaxed">
-                iPhone: กด “บันทึกรูปภาพ” ในหน้าต่างแชร์ <br>
-                Android: เลือก Photos / Gallery / Save Image <br>
-                หากไม่ขึ้น ระบบจะดาวน์โหลดไฟล์ JPG แทน
-            </p>
-
-            <button onclick="closeModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">
-                ตกลง
-            </button>
-        </div>
+        <p class="font-medium tracking-wide">กำลังสร้างรูปเปรียบเทียบ...</p>
     </div>
 
     <script>
-        const state = { 
-            beforeImg: null, 
-            afterImg: null 
-        };
+        const state = { beforeImg: null, afterImg: null, currentBlob: null };
 
         function handleImage(input, type) {
             const file = input.files[0];
-
             if (!file) return;
 
-            if (!file.type.startsWith("image/")) {
-                showError("กรุณาเลือกไฟล์รูปภาพเท่านั้น");
-                return;
-            }
-
             const reader = new FileReader();
-
             reader.onload = (e) => {
                 const preview = document.getElementById(`${type}Preview`);
                 const placeholder = document.getElementById(`${type}Placeholder`);
-                const badge = document.getElementById(`${type}Badge`);
                 const slot = document.getElementById(`${type}Btn`);
 
                 preview.src = e.target.result;
                 preview.classList.remove('hidden');
                 placeholder.classList.add('hidden');
-                badge.classList.remove('hidden');
                 slot.classList.add('has-image');
-
+                
                 const img = new Image();
-
-                img.onload = () => {
-                    state[`${type}Img`] = img;
-                };
-
+                img.onload = () => state[`${type}Img`] = img;
                 img.src = e.target.result;
             };
-
             reader.readAsDataURL(file);
         }
 
-        async function generateAndShare() {
-            const areaName = document.getElementById('areaName').value.trim() || "รายงานเปรียบเทียบรูปภาพ";
-
+        async function generateResult() {
+            const areaNameInput = document.getElementById('areaName').value.trim();
+            const areaName = areaNameInput || "รายงานเปรียบเทียบรูปภาพ";
+            
             if (!state.beforeImg || !state.afterImg) {
-                showError("กรุณาเลือกรูปภาพให้ครบครับ");
+                alert("กรุณาเลือกรูปภาพให้ครบทั้งสองช่องครับ");
                 return;
             }
 
@@ -245,241 +182,94 @@
             try {
                 const canvas = document.getElementById('exportCanvas');
                 const ctx = canvas.getContext('2d');
-
-                const p = 30;
-                const hH = 120;
-                const iW = 800;
-                const iH = 600;
-
+                
+                // HD Layout Settings
+                const p = 30, hH = 120, iW = 800, iH = 600;
                 canvas.width = (iW * 2) + (p * 3);
                 canvas.height = iH + hH + (p * 2);
 
+                // Draw Background
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+                // Draw Text
                 ctx.fillStyle = "#0f172a";
                 ctx.font = "bold 52px Kanit, sans-serif";
                 ctx.textAlign = "center";
+                ctx.fillText(areaName, canvas.width / 2, 80);
 
-                fitText(ctx, areaName, canvas.width / 2, 80, canvas.width - 80, 52);
+                function drawFrame(img, x, y, w, h, label, labelBg) {
+                    ctx.save();
+                    const r = 25;
+                    ctx.beginPath();
+                    ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+                    ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+                    ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+                    ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y);
+                    ctx.closePath(); ctx.clip();
 
-                drawFrame(
-                    ctx,
-                    state.beforeImg,
-                    p,
-                    hH + p,
-                    iW,
-                    iH,
-                    "BEFORE",
-                    "#2563eb"
-                );
+                    const ir = img.width / img.height, tr = w / h;
+                    let sw, sh, sx, sy;
+                    if (ir > tr) { sh = img.height; sw = img.height * tr; sx = (img.width - sw) / 2; sy = 0; }
+                    else { sw = img.width; sh = img.width / tr; sx = 0; sy = (img.height - sh) / 2; }
+                    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+                    ctx.restore();
 
-                drawFrame(
-                    ctx,
-                    state.afterImg,
-                    iW + (p * 2),
-                    hH + p,
-                    iW,
-                    iH,
-                    "AFTER",
-                    "#16a34a"
-                );
+                    // Label Badge
+                    ctx.fillStyle = labelBg;
+                    ctx.beginPath(); ctx.roundRect(x + 25, y + 25, 180, 60, 15); ctx.fill();
+                    ctx.fillStyle = "#FFFFFF"; ctx.font = "bold 28px Kanit, sans-serif";
+                    ctx.textAlign = "center"; ctx.fillText(label, x + 115, y + 65);
+                }
 
-                canvas.toBlob(async (blob) => {
-                    if (!blob) {
-                        toggleLoading(false);
-                        showError("สร้างรูปภาพไม่สำเร็จ");
-                        return;
-                    }
+                drawFrame(state.beforeImg, p, hH + p, iW, iH, "BEFORE", "#2563eb");
+                drawFrame(state.afterImg, iW + (p * 2), hH + p, iW, iH, "AFTER", "#16a34a");
 
-                    const fileName = `Before_After_${Date.now()}.jpg`;
-                    const file = new File([blob], fileName, { type: "image/jpeg" });
-
-                    await saveToAlbumFlow(blob, file, fileName);
-
-                }, 'image/jpeg', 0.92);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                const finalImg = document.getElementById('finalImage');
+                finalImg.src = dataUrl;
+                state.currentBlob = dataUrl;
+                
+                // Show Result and Scroll
+                document.getElementById('resultView').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('resultView').scrollIntoView({ behavior: 'smooth' });
+                }, 100);
 
             } catch (error) {
                 console.error(error);
+                alert("ระบบขัดข้อง กรุณาลองใหม่อีกครั้ง");
+            } finally {
                 toggleLoading(false);
-                showError("ระบบขัดข้อง กรุณาลองใหม่");
             }
         }
 
-        function drawFrame(ctx, img, x, y, w, h, label, labelBg) {
-            ctx.save();
-
-            const r = 25;
-
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            ctx.lineTo(x + r, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-            ctx.clip();
-
-            const imageRatio = img.width / img.height;
-            const targetRatio = w / h;
-
-            let sw, sh, sx, sy;
-
-            if (imageRatio > targetRatio) {
-                sh = img.height;
-                sw = img.height * targetRatio;
-                sx = (img.width - sw) / 2;
-                sy = 0;
-            } else {
-                sw = img.width;
-                sh = img.width / targetRatio;
-                sx = 0;
-                sy = (img.height - sh) / 2;
-            }
-
-            ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
-            ctx.restore();
-
-            ctx.fillStyle = labelBg;
-            roundRect(ctx, x + 25, y + 25, 180, 60, 15);
-            ctx.fill();
-
-            ctx.fillStyle = "#FFFFFF";
-            ctx.font = "bold 28px Kanit, sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText(label, x + 115, y + 65);
-        }
-
-        function roundRect(ctx, x, y, w, h, r) {
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            ctx.lineTo(x + r, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-        }
-
-        function fitText(ctx, text, x, y, maxWidth, fontSize) {
-            let size = fontSize;
-
-            do {
-                ctx.font = `bold ${size}px Kanit, sans-serif`;
-                size -= 2;
-            } while (ctx.measureText(text).width > maxWidth && size > 24);
-
-            ctx.fillText(text, x, y);
-        }
-
-        async function saveToAlbumFlow(blob, file, fileName) {
-            const canShareFile =
-                navigator.share &&
-                navigator.canShare &&
-                navigator.canShare({ files: [file] });
-
-            if (canShareFile) {
-                try {
-                    toggleLoading(false);
-
-                    await navigator.share({
-                        files: [file],
-                        title: "Before After Report",
-                        text: "กดบันทึกรูปภาพลงอัลบั้ม"
-                    });
-
-                    resetForm();
-                    return;
-
-                } catch (err) {
-                    console.error(err);
-                    toggleLoading(false);
-
-                    if (err.name === "AbortError") {
-                        showError("ยกเลิกการบันทึก");
-                        return;
-                    }
-
-                    fallbackDownload(blob, fileName);
-                    return;
-                }
-            }
-
-            fallbackDownload(blob, fileName);
-        }
-
-        function fallbackDownload(blob, fileName) {
-            const url = URL.createObjectURL(blob);
+        function downloadImageManually() {
+            if (!state.currentBlob) return;
             const a = document.createElement('a');
-
-            a.href = url;
-            a.download = fileName;
-            a.style.display = "none";
-
+            a.href = state.currentBlob;
+            a.download = `Comparison_${Date.now()}.jpg`;
             document.body.appendChild(a);
             a.click();
-
-            setTimeout(() => {
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 300);
-
-            toggleLoading(false);
-            document.getElementById('fallbackModal').classList.remove('hidden');
-            resetForm();
+            document.body.removeChild(a);
         }
 
-        function resetForm() {
+        function resetApp() {
             document.getElementById('areaName').value = "";
-
             ['before', 'after'].forEach(type => {
-                const preview = document.getElementById(`${type}Preview`);
-                const placeholder = document.getElementById(`${type}Placeholder`);
-                const badge = document.getElementById(`${type}Badge`);
-                const slot = document.getElementById(`${type}Btn`);
-
-                preview.src = "";
-                preview.classList.add('hidden');
-                placeholder.classList.remove('hidden');
-                badge.classList.add('hidden');
-                slot.classList.remove('has-image');
-
+                document.getElementById(`${type}Preview`).classList.add('hidden');
+                document.getElementById(`${type}Placeholder`).classList.remove('hidden');
+                document.getElementById(`${type}Btn`).classList.remove('has-image');
                 state[`${type}Img`] = null;
             });
-
-            document.getElementById('inputBefore').value = "";
-            document.getElementById('inputAfter').value = "";
-
+            document.getElementById('resultView').classList.add('hidden');
+            state.currentBlob = null;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
         }
-
-        function showError(msg) {
-            const toast = document.getElementById('errorToast');
-
-            document.getElementById('errorMsg').innerText = msg;
-
-            toast.style.transform = 'translate(-50%, 0)';
-
-            setTimeout(() => {
-                toast.style.transform = 'translate(-50%, 200%)';
-            }, 3000);
-        }
-
-        function closeModal() {
-            document.getElementById('fallbackModal').classList.add('hidden');
-        }
     </script>
-
 </body>
 </html>
