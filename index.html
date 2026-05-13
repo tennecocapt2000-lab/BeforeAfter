@@ -6,6 +6,8 @@
     <title>Before/After App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- heic2any library for HEIC support -->
+    <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
     <style>
         body {
             font-family: 'Kanit', sans-serif;
@@ -70,7 +72,7 @@
                             </div>
                             <img id="beforePreview" class="hidden w-full h-full object-cover">
                         </div>
-                        <input type="file" id="inputBefore" accept="image/*" class="hidden" onchange="handleImage(this, 'before')">
+                        <input type="file" id="inputBefore" accept="image/*,image/heic" class="hidden" onchange="handleImage(this, 'before')">
                     </div>
 
                     <!-- After -->
@@ -87,7 +89,7 @@
                             </div>
                             <img id="afterPreview" class="hidden w-full h-full object-cover">
                         </div>
-                        <input type="file" id="inputAfter" accept="image/*" class="hidden" onchange="handleImage(this, 'after')">
+                        <input type="file" id="inputAfter" accept="image/*,image/heic" class="hidden" onchange="handleImage(this, 'after')">
                     </div>
                 </div>
 
@@ -140,32 +142,53 @@
 
     <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white">
         <div class="loader-spinner mb-4"></div>
-        <p class="font-medium tracking-wide">กำลังสร้างรูปเปรียบเทียบ...</p>
+        <p id="loadingText" class="font-medium tracking-wide">กำลังประมวลผล...</p>
     </div>
 
     <script>
         const state = { beforeImg: null, afterImg: null, currentBlob: null };
 
-        function handleImage(input, type) {
+        async function handleImage(input, type) {
             const file = input.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const preview = document.getElementById(`${type}Preview`);
-                const placeholder = document.getElementById(`${type}Placeholder`);
-                const slot = document.getElementById(`${type}Btn`);
+            toggleLoading(true, "กำลังเตรียมรูปภาพ...");
 
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-                slot.classList.add('has-image');
-                
-                const img = new Image();
-                img.onload = () => state[`${type}Img`] = img;
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+            try {
+                let processFile = file;
+
+                // Check if file is HEIC
+                if (file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic")) {
+                    const convertedBlob = await heic2any({
+                        blob: file,
+                        toType: "image/jpeg",
+                        quality: 0.8
+                    });
+                    processFile = convertedBlob;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById(`${type}Preview`);
+                    const placeholder = document.getElementById(`${type}Placeholder`);
+                    const slot = document.getElementById(`${type}Btn`);
+
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    slot.classList.add('has-image');
+                    
+                    const img = new Image();
+                    img.onload = () => state[`${type}Img`] = img;
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(processFile);
+            } catch (error) {
+                console.error(error);
+                alert("ไม่สามารถอ่านไฟล์ภาพนี้ได้ กรุณาลองใช้นามสกุลอื่น เช่น JPG หรือ PNG");
+            } finally {
+                toggleLoading(false);
+            }
         }
 
         async function generateResult() {
@@ -177,7 +200,7 @@
                 return;
             }
 
-            toggleLoading(true);
+            toggleLoading(true, "กำลังสร้างรูปเปรียบเทียบ...");
 
             try {
                 const canvas = document.getElementById('exportCanvas');
@@ -238,7 +261,7 @@
 
             } catch (error) {
                 console.error(error);
-                alert("ระบบขัดข้อง กรุณาลองใหม่อีกครั้ง");
+                alert("ระบบขัดข้อง กรุณาลองใหมีกครั้ง");
             } finally {
                 toggleLoading(false);
             }
@@ -267,8 +290,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function toggleLoading(show) {
+        function toggleLoading(show, text = "กำลังประมวลผล...") {
             document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
+            document.getElementById('loadingText').innerText = text;
         }
     </script>
 </body>
